@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>HTML Assignment</title>
+</head>
+
+<body>
+
+    <!-- ================= QUESTION 1 ================= -->
+    <h1>1. YouTube Video</h1>
+
+    <iframe
+        src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+        width="80%"
+        height="50%"
+        title="YouTube Video">
+    </iframe>
+
+
+    <!-- ================= QUESTION 2 ================= -->
+    <h1>2. Google Map</h1>
+
+    <!-- loading="lazy" loads the map only when it is needed/near the visible area -->
+    <iframe
+        src="https://www.google.com/maps?q=Mathura%20Uttar%20Pradesh&output=embed"
+        title="Google Map of Mathura"
+        width="600"
+        height="450"
+        loading="lazy">
+    </iframe>
+
+
+    <!-- ================= QUESTION 3 ================= -->
+    <h1>3. Two Iframes</h1>
+
+    <iframe
+        src="introduction.html"
+        width="600"
+        height="200"
+        title="Introduction Page">
+    </iframe>
+
+    <br><br>
+
+    <iframe
+        src="hobby.html"
+        width="600"
+        height="200"
+        title="Hobby Page">
+    </iframe>
+
+
+    <!-- ================= QUESTION 4 ================= -->
+    <h1>4. Frameset Layout</h1>
+
+    <p>
+        The frameset structure for this question is given below.
+    </p>
+
+    <!--
+    This question uses old HTML frameset tags.
+    Save this code separately as frameset.html.
+    
+    <frameset rows="30%,70%">
+        <frame src="navigation.html">
+        <frame src="welcome.html">
+    </frameset>
+    -->
+
+
+    <!-- ================= QUESTION 5 ================= -->
+    <h1>5. UTF-8 Encoding</h1>
+
+    <p>
+        Hello! This is English.
+        नमस्ते! यह हिंदी है।
+        こんにちは！これは日本語です。
+    </p>
+
+
+    <!-- ================= QUESTION 6 ================= -->
+    <h1>6. User Registration Form</h1>
+
+    <form>
+
+        <label>Full Name:</label>
+        <input type="text" name="fullname" required>
+        <br><br>
+
+        <label>Email Address:</label>
+        <input type="email" name="email" required>
+        <br><br>
+
+        <label>Password:</label>
+        <input type="password" name="password" required>
+        <br><br>
+
+        <label>Confirm Password:</label>
+        <input type="password" name="confirm_password" required>
+        <br><br>
+
+        <input type="submit" value="Register">
+
+    </form>
+
+
+    <!-- ================= QUESTION 7 ================= -->
+    <h1>7. Login Form</h1>
+
+    <!-- CSRF token helps protect forms against Cross-Site Request Forgery attacks. -->
+
+    <form>
+
+        <label>Username:</label>
+        <input type="text" name="username">
+        <br><br>
+
+        <label>Password:</label>
+        <input type="password" name="password">
+        <br><br>
+
+        <input type="hidden" name="csrf_token" value="ABC123XYZ">
+
+        <input type="submit" value="Login">
+
+    </form>
+
+
+    <!-- ================= QUESTION 8 ================= -->
+    <h1>8. Feedback Form</h1>
+
+    <form method="post" action="#">
+
+        <label>Feedback:</label>
+        <br>
+
+        <textarea name="feedback" rows="5" cols="40"></textarea>
+
+        <br><br>
+
+        <label>Rating:</label>
+        <br>
+
+        <input type="radio" name="rating" value="Good">
+        <label>Good</label>
+
+        <input type="radio" name="rating" value="Average">
+        <label>Average</label>
+
+        <input type="radio" name="rating" value="Poor">
+        <label>Poor</label>
+
+        <br><br>
+
+        <input type="submit" value="Submit">
+
+    </form>
+
+
+    <!-- ================= QUESTION 9 ================= -->
+    <h1>9. File Upload Form</h1>
+
+    <form>
+
+        <label>Select File:</label>
+        <input type="file" name="file" accept=".jpg,.png">
+
+        <p>Only JPG and PNG image files are allowed.</p>
+
+        <input type="submit" value="Upload">
+
+    </form>
+
+
+    <!-- ================= QUESTION 10 ================= -->
+    <h1>10. Contact Form</h1>
+
+    <form>
+
+        <label>Full Name:</label>
+        <input
+            type="text"
+            name="fullname"
+            placeholder="Enter your full name"
+            required>
+        <br><br>
+
+        <label>Email:</label>
+        <input
+            type="email"
+            name="email"
+            placeholder="Enter your email"
+            required>
+        <br><br>
+
+        <label>Subject:</label>
+        <input
+            type="text"
+            name="subject"
+            placeholder="Enter subject"
+            required>
+        <br><br>
+
+        <label>Message:</label>
+        <br>
+
+        <textarea
+            name="message"
+            placeholder="Enter your message"
+            required>
+        </textarea>
+
+        <br><br>
+
+        <input type="submit" value="Send Message">
+
+    </form>
+
+
+    <!-- ================= QUESTION 11 ================= -->
+    <h1>11. Student Information</h1>
+
+    <form>
+
+        <label>Name:</label>
+        <input type="text" name="name">
+        <br><br>
+
+        <label>Roll Number:</label>
+        <input type="text" name="roll">
+        <br><br>
+
+        <label>Course:</label>
+
+        <select name="course">
+
+            <option value="" disabled selected>
+                Select Course
+            </option>
+
+            <option>B.Tech</option>
+            <option>BCA</option>
+            <option>MCA</option>
+            <option>BBA</option>
+
+        </select>
+
+        <br><br>
+
+        <input type="submit" value="Submit">
+
+    </form>
+
+
+    <!-- ================= QUESTION 12 ================= -->
+    <h1>12. HTML Entities</h1>
+
+    <p>
+        Less than: &lt;
+        Greater than: &gt;
+        Ampersand: &amp;
+        Double quote: &quot;
+        Single quote: &apos;
+        Copyright: &copy;
+        Trademark: &trade;
+        Registered: &reg;
+    </p>
+
+
+    <!-- ================= QUESTION 13 ================= -->
+    <h1>13. Three Languages</h1>
+
+    <p>
+        English: Hello, how are you?
+    </p>
+
+    <p>
+        Hindi: नमस्ते, आप कैसे हैं?
+    </p>
+
+    <p>
+        French: Bonjour, comment allez-vous?
+    </p>
+
+
+    <!-- ================= QUESTION 14 ================= -->
+    <h1>14. Wikipedia Website</h1>
+
+    <iframe
+        src="https://www.wikipedia.org"
+        width="800"
+        height="500"
+        title="Wikipedia Website">
+    </iframe>
+
+    <p>
+        Some websites may not allow embedding for security reasons.
+    </p>
+
+
+    <!-- ================= QUESTION 15 ================= -->
+    <h1>15. Payment Form</h1>
+
+    <form>
+
+        <label>Cardholder Name:</label>
+        <input
+            type="text"
+            name="cardholder"
+            required>
+        <br><br>
+
+        <label>Card Number:</label>
+        <input
+            type="text"
+            name="cardnumber"
+            required>
+        <br><br>
+
+        <label>Expiry Date:</label>
+        <input
+            type="month"
+            name="expiry"
+            required>
+        <br><br>
+
+        <label>CVV:</label>
+        <input
+            type="password"
+            name="cvv"
+            required>
+        <br><br>
+
+        <input type="submit" value="Pay Now">
+
+    </form>
+
+
+    <!-- ================= QUESTION 16 ================= -->
+    <h1>16. URI Encoding</h1>
+
+    <p>Encoded URL:</p>
+
+    <a href="https://example.com/search?query=HTML%20%26%20CSS">
+        Search HTML &amp; CSS
+    </a>
+
+
+    <!-- ================= QUESTION 17 ================= -->
+    <h1>17. Form and Result</h1>
+
+    <p>
+        Create two files for this question:
+        <strong>form.html</strong> and <strong>result.html</strong>
+    </p>
+
+    <iframe
+        src="result.html"
+        width="500"
+        height="150"
+        title="Result Page">
+    </iframe>
+
+
+    <!-- ================= QUESTION 18 ================= -->
+    <h1>18. Quotations</h1>
+
+    <blockquote>
+        Learning HTML &amp; practicing every day helps students
+        understand how webpages are created and structured.
+    </blockquote>
+
+    <p>
+        My teacher said, <q>Practice makes perfect.</q>
+    </p>
+
+
+    <!-- ================= QUESTION 19 ================= -->
+    <h1>19. Form Security</h1>
+
+    <form autocomplete="off">
+
+        <label>Name:</label>
+        <input type="text" name="name" required>
+        <br><br>
+
+        <label>Email:</label>
+        <input type="email" name="email" required>
+        <br><br>
+
+        <label>Password:</label>
+        <input type="password" name="password" required>
+        <br><br>
+
+        <input type="submit" value="Submit">
+
+    </form>
+
+    <p>
+        Turning off autocomplete can improve security by preventing
+        browsers from automatically storing or filling sensitive information.
+    </p>
+
+
+    <!-- ================= QUESTION 20 ================= -->
+    <h1>20. Important Head Elements</h1>
+
+    <p>
+        This page demonstrates important HTML head elements.
+    </p>
+
+</body>
+</html>
