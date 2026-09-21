@@ -1,0 +1,444 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Assignment 7</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            margin: 20px;
+        }
+
+        section {
+            margin: 40px 0;
+            padding: 20px;
+            border: 1px solid gray;
+        }
+
+        /* Q1 Borders */
+        .borders {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .b {
+            padding: 20px;
+            border: 3px solid black;
+            transition: 0.3s;
+        }
+
+        .b:hover {
+            border-color: red;
+        }
+
+        .dashed {
+            border-style: dashed;
+        }
+
+        .double {
+            border-style: double;
+        }
+
+        .groove {
+            border-style: groove;
+        }
+
+        .round {
+            border-radius: 20px;
+        }
+
+
+        /* Q2 Height Width */
+        .sizes {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .box1 {
+            width: 100px;
+            height: 100px;
+            background: lightblue;
+        }
+
+        .box2 {
+            width: 30%;
+            height: 20vh;
+            background: lightgreen;
+        }
+
+        .box3 {
+            width: 10em;
+            height: 150px;
+            background: lightpink;
+        }
+
+
+        /* Q3 Gradient */
+        .linear {
+            padding: 50px;
+            color: white;
+            text-align: center;
+            background: linear-gradient(to right, blue, purple);
+        }
+
+        .radial {
+            padding: 50px;
+            color: white;
+            text-align: center;
+            background: radial-gradient(circle, orange, red);
+        }
+
+
+        /* Q4 Shadows */
+        .cards {
+            display: flex;
+            gap: 20px;
+        }
+
+        .card {
+            padding: 30px;
+            box-shadow: 5px 5px 10px gray;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 5px 10px 20px black;
+        }
+
+
+        /* Q5 Selectors */
+        input[type="text"] {
+            border: 2px solid blue;
+        }
+
+        a[href^="https"] {
+            color: green;
+        }
+
+        .list li:hover {
+            background: yellow;
+        }
+
+        .list li:nth-child(2) {
+            color: red;
+        }
+
+        .title::before {
+            content: "★ ";
+        }
+
+        .title::after {
+            content: " ★";
+        }
+
+
+        /* Q6 Transform */
+        .transform {
+            display: flex;
+            gap: 30px;
+        }
+
+        .t {
+            width: 100px;
+            height: 100px;
+            background: lightblue;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s ease;
+        }
+
+        .rotate:hover {
+            transform: rotate(20deg);
+        }
+
+        .scale:hover {
+            transform: scale(1.2);
+        }
+
+        .translate:hover {
+            transform: translateY(-20px);
+        }
+
+        .skew:hover {
+            transform: skew(15deg);
+        }
+
+
+        /* Q7 Typography */
+        .text {
+            line-height: 1.8;
+            letter-spacing: 1px;
+            font-size: 18px;
+        }
+
+        mark {
+            background: yellow;
+        }
+
+        strong {
+            color: blue;
+        }
+
+        em {
+            color: green;
+        }
+
+        .text::first-letter {
+            font-size: 30px;
+        }
+
+
+        /* Q8 Box Model */
+        .margin {
+            background: pink;
+            padding: 30px;
+            width: 250px;
+            margin: auto;
+        }
+
+        .border {
+            border: 10px solid black;
+            padding: 20px;
+        }
+
+        .content {
+            background: lightblue;
+            padding: 30px;
+            text-align: center;
+        }
+
+
+        /* Q9 Form */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 300px;
+        }
+
+        input, textarea {
+            padding: 10px;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: 2px solid blue;
+        }
+
+
+        /* Q10 Navbar */
+        nav {
+            display: flex;
+            justify-content: center;
+        }
+
+        nav a {
+            padding: 15px;
+            border: 1px solid black;
+            text-decoration: none;
+            color: black;
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover {
+            background: lightblue;
+        }
+
+        nav .active {
+            background: blue;
+            color: white;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+
+        /* Mobile */
+        @media(max-width: 700px) {
+            .sizes,
+            .cards,
+            .transform,
+            nav {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Assignment 7</h1>
+
+
+    <!-- Q1 -->
+    <section>
+        <h2>1. Borders and Padding</h2>
+
+        <div class="borders">
+            <div class="b">Solid</div>
+            <div class="b dashed">Dashed</div>
+            <div class="b double">Double</div>
+            <div class="b groove">Groove</div>
+            <div class="b round">Rounded</div>
+        </div>
+    </section>
+
+
+    <!-- Q2 -->
+    <section>
+        <h2>2. Height and Width</h2>
+
+        <div class="sizes">
+            <div class="box1">100px</div>
+            <div class="box2">30% / 20vh</div>
+            <div class="box3">10em</div>
+        </div>
+    </section>
+
+
+    <!-- Q3 -->
+    <section>
+        <h2>3. Gradients</h2>
+
+        <div class="linear">
+            Linear Gradient
+        </div>
+
+        <br>
+
+        <div class="radial">
+            Radial Gradient
+        </div>
+    </section>
+
+
+    <!-- Q4 -->
+    <section>
+        <h2>4. Shadows</h2>
+
+        <div class="cards">
+            <div class="card">Card 1</div>
+            <div class="card">Card 2</div>
+            <div class="card">Card 3</div>
+        </div>
+    </section>
+
+
+    <!-- Q5 -->
+    <section>
+        <h2 class="title">5. CSS Selectors</h2>
+
+        <input type="text" placeholder="Text">
+
+        <p>
+            <a href="https://google.com">HTTPS Link</a>
+        </p>
+
+        <ul class="list">
+            <li>Item 1</li>
+            <li>Item 2</li>
+            <li>Item 3</li>
+        </ul>
+    </section>
+
+
+    <!-- Q6 -->
+    <section>
+        <h2>6. Transformations</h2>
+
+        <div class="transform">
+            <div>
+                <div class="t rotate">Rotate</div>
+                <p>rotate()</p>
+            </div>
+
+            <div>
+                <div class="t scale">Scale</div>
+                <p>scale()</p>
+            </div>
+
+            <div>
+                <div class="t translate">Move</div>
+                <p>translate()</p>
+            </div>
+
+            <div>
+                <div class="t skew">Skew</div>
+                <p>skew()</p>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Q7 -->
+    <section>
+        <h2>7. Typography</h2>
+
+        <p class="text">
+            This is a simple paragraph showing different
+            text styles. <mark>Highlighted</mark>
+            <strong>Strong</strong> and <em>Italic</em> text.
+        </p>
+    </section>
+
+
+    <!-- Q8 -->
+    <section>
+        <h2>8. Box Model</h2>
+
+        <div class="margin">
+            Margin
+
+            <div class="border">
+                Border
+
+                <div class="content">
+                    Content + Padding
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Q9 -->
+    <section>
+        <h2>9. Form and Outline</h2>
+
+        <form>
+            <input type="text" placeholder="Name">
+            <input type="email" placeholder="Email">
+            <textarea placeholder="Message"></textarea>
+            <button>Submit</button>
+        </form>
+    </section>
+
+
+    <!-- Q10 -->
+    <section>
+        <h2>10. Navigation Bar</h2>
+
+        <nav>
+            <a href="#" class="active">Home</a>
+            <a href="#">About</a>
+            <a href="#">Services</a>
+            <a href="#">Projects</a>
+            <a href="#">Contact</a>
+        </nav>
+
+        <footer>
+            Copyright 2026
+        </footer>
+    </section>
+
+</body>
+</html>
+```
