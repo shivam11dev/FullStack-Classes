@@ -1,0 +1,196 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Assignment 8</title>
+
+    <style>
+        body{font-family:Arial;margin:20px}
+        section{margin:30px 0;padding:20px;border:1px solid #aaa}
+        button,input,select,textarea{padding:10px;margin:5px}
+
+        /* Q1 */
+        .q1{display:flex;gap:20px}
+        .q1 a:hover{background:yellow}
+        .q1 button:active{background:red}
+        .q1 input:focus{background:lightblue}
+        li:nth-child(2){color:red}
+
+        /* Q2 */
+        .tips{display:flex;justify-content:center;gap:40px}
+        .tip{position:relative;background:lightblue;padding:15px}
+        .tip span{position:absolute;bottom:100%;left:0;background:black;color:white;opacity:0}
+        .tip:hover span{opacity:1;transition:.3s}
+
+        /* Q3 */
+        .pics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+        .pics img{width:100%;border-radius:10px;transition:.3s}
+        .pics img:hover{transform:scale(1.1);opacity:.7}
+
+        /* Q4 */
+        .blue{color:blue}
+        #red{color:red}
+        input[type=text]{border:2px solid green}
+        .parent>p{background:lightblue}
+        .first+p{color:green}
+
+        /* Q5 */
+        .buttons{display:flex;justify-content:center;gap:10px}
+        .primary{background:blue;color:white}
+        .outline{background:white;border:2px solid blue}
+        .buttons button:hover{transform:scale(1.1)}
+        .buttons button:focus{outline:2px solid red}
+
+        /* Q6 */
+        .animation{display:flex;justify-content:center;gap:30px}
+        .ball{width:40px;height:40px;background:red;border-radius:50%;animation:up 1s infinite alternate}
+        .move{animation:right 2s infinite alternate}
+        @keyframes up{to{transform:translateY(-40px)}}
+        @keyframes right{to{transform:translateX(40px)}}
+
+        /* Q7 */
+        .ui{display:flex;justify-content:center;gap:10px;background:linear-gradient(90deg,lightblue,white);padding:20px}
+
+        /* Q8 */
+        .size{display:flex;justify-content:center;gap:20px}
+        .default{width:200px;padding:30px;border:10px solid red;background:pink}
+        .borderbox{width:200px;padding:30px;border:10px solid blue;background:lightblue;box-sizing:border-box}
+
+        /* Q9 */
+        .effects{display:flex;justify-content:space-around}
+        .effect{padding:20px;transition:.3s;box-shadow:2px 2px 5px gray}
+        .effect:hover{transform:scale(1.1);background:orange}
+
+        /* Q10 */
+        .mini{max-width:500px;margin:auto;border:1px solid gray}
+        header,footer{text-align:center;background:#333;color:white;padding:10px}
+        .main{display:flex;gap:20px;padding:20px}
+        .main img{width:120px}
+        .main form{display:flex;flex-direction:column}
+
+        @media(max-width:700px){
+            .q1,.pics,.buttons,.animation,.ui,.size,.effects,.main{flex-direction:column;display:flex}
+            .pics{display:block}
+            .pics figure{margin:10px}
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>Assignment 8</h1>
+
+<!-- Q1 -->
+<section>
+<h2>1. Pseudo Classes</h2>
+<div class="q1">
+<a href="#">Hover</a>
+<button>Click</button>
+<input type="text" placeholder="Focus">
+<ul><li>One</li><li>Two</li><li>Three</li></ul>
+</div>
+</section>
+
+<!-- Q2 -->
+<section>
+<h2>2. Tooltip</h2>
+<div class="tips">
+<div class="tip">Home<span>Go Home</span></div>
+<div class="tip">Help<span>Get Help</span></div>
+<div class="tip">Info<span>Information</span></div>
+</div>
+</section>
+
+<!-- Q3 -->
+<section>
+<h2>3. Image Showcase</h2>
+<div class="pics">
+<figure><img src="https://picsum.photos/200?1"><figcaption>Photo 1</figcaption></figure>
+<figure><img src="https://picsum.photos/200?2"><figcaption>Photo 2</figcaption></figure>
+<figure><img src="https://picsum.photos/200?3"><figcaption>Photo 3</figcaption></figure>
+<figure><img src="https://picsum.photos/200?4"><figcaption>Photo 4</figcaption></figure>
+<figure><img src="https://picsum.photos/200?5"><figcaption>Photo 5</figcaption></figure>
+<figure><img src="https://picsum.photos/200?6"><figcaption>Photo 6</figcaption></figure>
+</div>
+</section>
+
+<!-- Q4 -->
+<section>
+<h2>4. CSS Selectors</h2>
+<p>Element</p>
+<p class="blue">Class</p>
+<p id="red">ID</p>
+<input type="text" placeholder="Attribute">
+<div class="parent"><p>Child</p></div>
+<p class="first">First</p><p>Adjacent</p>
+</section>
+
+<!-- Q5 -->
+<section>
+<h2>5. Buttons</h2>
+<div class="buttons">
+<button class="primary">Primary</button>
+<button>Secondary</button>
+<button class="outline">Outline</button>
+<button disabled>Disabled</button>
+</div>
+</section>
+
+<!-- Q6 -->
+<section>
+<h2>6. Animation</h2>
+<div class="animation">
+<div class="ball"></div>
+<h3 class="move">Moving Text</h3>
+</div>
+</section>
+
+<!-- Q7 -->
+<section>
+<h2>7. User Interface</h2>
+<div class="ui">
+<input placeholder="Search">
+<select><option>Select</option><option>HTML</option></select>
+<button>Search</button>
+</div>
+</section>
+
+<!-- Q8 -->
+<section>
+<h2>8. Box Sizing</h2>
+<div class="size">
+<div class="default">Default Box</div>
+<div class="borderbox">Border Box</div>
+</div>
+</section>
+
+<!-- Q9 -->
+<section>
+<h2>9. Combined Effects</h2>
+<div class="effects">
+<button class="effect">Button 1</button>
+<button class="effect">Button 2</button>
+<button class="effect">Button 3</button>
+</div>
+</section>
+
+<!-- Q10 -->
+<section>
+<h2>10. Mini UI</h2>
+<div class="mini">
+<header>My Website</header>
+<div class="main">
+<img src="https://picsum.photos/120">
+<form>
+<input placeholder="Name">
+<input placeholder="Email">
+<button>Submit</button>
+</form>
+</div>
+<footer>Copyright 2026</footer>
+</div>
+</section>
+
+</body>
+</html>
+```
