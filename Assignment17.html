@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Assignment 7 – DOM &amp; Events</title>
+
+<!-- ======================================================================
+     ASSIGNMENT 7 – all 9 questions in ONE file (HTML + CSS + core JS).
+     Open this file in any browser. Each question is its own <section> with
+     its own self-contained IIFE in the <script> at the bottom, so variable
+     names never clash between questions.
+     ====================================================================== -->
+<style>
+  /* ---------- Theme variables (Q4 switches these via setAttribute) ---------- */
+  :root, body.theme-light {
+    --bg: #f3f4f6; --card: #ffffff; --text: #111827; --muted: #6b7280;
+    --border: #d1d5db; --accent: #2563eb; --accent-text: #ffffff;
+  }
+  body.theme-dark {
+    --bg: #0f172a; --card: #1e293b; --text: #e5e7eb; --muted: #94a3b8;
+    --border: #334155; --accent: #38bdf8; --accent-text: #0f172a;
+  }
+  body.theme-blue {
+    --bg: #dbeafe; --card: #eff6ff; --text: #1e3a8a; --muted: #3b82f6;
+    --border: #93c5fd; --accent: #1d4ed8; --accent-text: #ffffff;
+  }
+
+  /* ---------- Base layout ---------- */
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }  /* make the hidden attribute win over display rules below */
+  body {
+    margin: 0; padding: 24px 16px 64px;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.5;
+  }
+  h1 { text-align: center; margin: 0 0 24px; }
+  section.card {
+    max-width: 760px; margin: 0 auto 24px; padding: 20px;
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+  }
+  section.card h2 { margin: 0 0 4px; font-size: 1.15rem; }
+  section.card p.hint { margin: 0 0 14px; color: var(--muted); font-size: .9rem; }
+
+  input, textarea, button { font: inherit; }
+  input[type="text"], input[type="email"], input[type="password"], textarea {
+    width: 100%; padding: 8px 10px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--bg); color: var(--text);
+  }
+  button {
+    padding: 8px 14px; border: 0; border-radius: 8px; cursor: pointer;
+    background: var(--accent); color: var(--accent-text);
+  }
+  button.secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
+  button.danger { background: #dc2626; color: #fff; }
+  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .error { color: #dc2626; font-size: .85rem; min-height: 1.2em; margin: 4px 0 0; }
+  .success { color: #16a34a; font-weight: 600; margin-top: 10px; }
+
+  /* ---------- Q1: product list ---------- */
+  #productList { list-style: none; padding: 0; margin: 14px 0 0; }
+  #productList li {
+    display: flex; gap: 8px; align-items: center; justify-content: space-between;
+    padding: 8px 10px; margin-bottom: 6px; border: 1px solid var(--border); border-radius: 8px;
+  }
+  #productList .product-name { flex: 1; }
+  #productList .edit-input { flex: 1; }
+
+  /* ---------- Q2: character counter ---------- */
+  #charCounter {
+    display: inline-block; padding: 2px 12px; border-radius: 999px; font-weight: 600;
+    background: var(--bg); border: 1px solid var(--border);
+  }
+  #charCounter.warning { background: #facc15; color: #000; border-color: #facc15; }  /* 20 or fewer left */
+  #charCounter.danger  { background: #dc2626; color: #fff; border-color: #dc2626; }  /* 0 left */
+
+  /* ---------- Q3: multi-step form ---------- */
+  .progress { display: flex; gap: 8px; margin-bottom: 14px; }
+  .step-dot {
+    flex: 1; text-align: center; padding: 4px; border-radius: 6px; font-size: .85rem;
+    background: var(--bg); border: 1px solid var(--border); color: var(--muted);
+  }
+  .step-dot.active { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+  .step-dot.done { border-color: #16a34a; color: #16a34a; }
+  .step { display: none; }
+  .step.active { display: block; }
+  #summary dl { margin: 0; }
+  #summary dt { font-weight: 600; margin-top: 8px; }
+  #summary dd { margin: 0; color: var(--muted); }
+
+  /* ---------- Q4: theme switcher ---------- */
+  #themeStatus code { background: var(--bg); padding: 2px 6px; border-radius: 4px; }
+
+  /* ---------- Q5: gallery + modal ---------- */
+  .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .gallery img {
+    width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 8px;
+    cursor: pointer; transition: transform .15s;
+  }
+  .gallery img:hover { transform: scale(1.03); }
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0, 0, 0, .75);
+    display: none; align-items: center; justify-content: center; z-index: 1000;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-content { background: #fff; padding: 12px; border-radius: 10px; max-width: 90vw; }
+  .modal-content img { display: block; max-width: 100%; max-height: 80vh; border-radius: 6px; }
+  .modal-content p { margin: 8px 0 0; color: #111827; text-align: center; }
+
+  /* ---------- Q6: table filter ---------- */
+  table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+  th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--border); }
+  #noResults td { text-align: center; color: var(--muted); }
+
+  /* ---------- Q7: mouse tracker ---------- */
+  #trackerBox {
+    position: relative; width: 400px; height: 400px; max-width: 100%;
+    border: 2px dashed var(--accent); border-radius: 8px; background: var(--bg); overflow: hidden;
+  }
+  .dot {
+    position: absolute; width: 12px; height: 12px; background: red; border-radius: 50%;
+    transform: translate(-50%, -50%); pointer-events: none;
+  }
+
+  /* ---------- Q8: custom dropdown ---------- */
+  .dropdown { position: relative; display: inline-block; min-width: 200px; }
+  .dropdown-toggle { width: 100%; text-align: left; }
+  .dropdown-menu {
+    display: none; position: absolute; left: 0; right: 0; top: calc(100% + 4px); z-index: 10;
+    list-style: none; margin: 0; padding: 4px 0;
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+  }
+  .dropdown.open .dropdown-menu { display: block; }
+  .dropdown-menu li { padding: 8px 12px; cursor: pointer; }
+  .dropdown-menu li:hover { background: var(--bg); }
+
+  /* ---------- Q9: validated form ---------- */
+  .field { margin-bottom: 10px; }
+  .field.invalid input { border-color: #dc2626; }
+</style>
+</head>
+
+<body class="theme-light" data-theme="light">
+<h1>Assignment 7 – DOM &amp; Events</h1>
+
+<!-- ============================ Q1 ============================ -->
+<section class="card" id="q1">
+  <h2>1. Dynamic Product List Manager</h2>
+  <p class="hint">Add products, Edit inline, Delete. Click outside the edited item to auto-save (Enter saves, Esc cancels).</p>
+  <div class="row">
+    <input type="text" id="productInput" placeholder="New product name" style="flex:1">
+    <button id="addProductBtn">Add</button>
+  </div>
+  <ul id="productList"></ul>
+</section>
+
+<!-- ============================ Q2 ============================ -->
+<section class="card" id="q2">
+  <h2>2. Live Character Counter</h2>
+  <p class="hint">Max 100 characters. Yellow at 20 left, red at 0 (typing is blocked).</p>
+  <textarea id="counterText" rows="4" placeholder="Start typing..."></textarea>
+  <div class="row" style="margin-top:8px; justify-content:space-between">
+    <span id="charCounter">100 characters left</span>
+    <button id="resetCounterBtn" class="secondary">Reset</button>
+  </div>
+</section>
+
+<!-- ============================ Q3 ============================ -->
+<section class="card" id="q3">
+  <h2>3. Multi-Step Form</h2>
+  <p class="hint">Name → Email → Password. "Next" only works when the current input is valid.</p>
+  <div class="progress">
+    <div class="step-dot">1. Name</div>
+    <div class="step-dot">2. Email</div>
+    <div class="step-dot">3. Password</div>
+  </div>
+  <form id="stepForm" novalidate>
+    <div class="step">
+      <label for="stepName">Name</label>
+      <input type="text" id="stepName" placeholder="Your name (min 2 letters)">
+      <p class="error"></p>
+    </div>
+    <div class="step">
+      <label for="stepEmail">Email</label>
+      <input type="email" id="stepEmail" placeholder="you@example.com">
+      <p class="error"></p>
+    </div>
+    <div class="step">
+      <label for="stepPassword">Password</label>
+      <input type="password" id="stepPassword" placeholder="Min 6 characters">
+      <p class="error"></p>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <button type="button" id="backBtn" class="secondary">Back</button>
+      <button type="submit" id="nextBtn">Next</button>
+    </div>
+  </form>
+  <div id="summary" hidden>
+    <h3>Summary</h3>
+    <dl>
+      <dt>Name</dt><dd id="sumName"></dd>
+      <dt>Email</dt><dd id="sumEmail"></dd>
+      <dt>Password</dt><dd id="sumPassword"></dd>
+    </dl>
+    <button type="button" id="restartBtn" class="secondary" style="margin-top:10px">Start over</button>
+  </div>
+</section>
+
+<!-- ============================ Q4 ============================ -->
+<section class="card" id="q4">
+  <h2>4. Theme Switcher</h2>
+  <p class="hint">Themes are applied to &lt;body&gt; with setAttribute() (class + data-theme). The whole page changes.</p>
+  <div class="row">
+    <button data-set-theme="light">Light</button>
+    <button data-set-theme="dark">Dark</button>
+    <button data-set-theme="blue">Blue</button>
+  </div>
+  <p id="themeStatus">Current theme: <code>light</code></p>
+</section>
+
+<!-- ============================ Q5 ============================ -->
+<section class="card" id="q5">
+  <h2>5. Image Gallery with Modal Preview</h2>
+  <p class="hint">Click an image to open it bigger. Click outside the modal to close it.</p>
+  <div class="gallery" id="gallery"></div>
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-content" id="modalContent">
+      <img id="modalImage" alt="">
+      <p id="modalCaption"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ Q6 ============================ -->
+<section class="card" id="q6">
+  <h2>6. Real-Time Table Filter</h2>
+  <p class="hint">Type to filter by name, branch or CGPA (case-insensitive).</p>
+  <input type="text" id="searchInput" placeholder="Search students...">
+  <table>
+    <thead><tr><th>Name</th><th>Branch</th><th>CGPA</th></tr></thead>
+    <tbody id="studentBody">
+      <tr><td>Aarav Sharma</td><td>CSE</td><td>8.9</td></tr>
+      <tr><td>Diya Verma</td><td>ECE</td><td>9.1</td></tr>
+      <tr><td>Rohan Gupta</td><td>Mechanical</td><td>7.6</td></tr>
+      <tr><td>Sneha Iyer</td><td>CSE</td><td>9.4</td></tr>
+      <tr><td>Karan Mehta</td><td>Civil</td><td>8.1</td></tr>
+      <tr><td>Priya Nair</td><td>IT</td><td>8.7</td></tr>
+      <tr><td>Vikram Singh</td><td>ECE</td><td>7.9</td></tr>
+      <tr id="noResults" hidden><td colspan="3">No results found</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============================ Q7 ============================ -->
+<section class="card" id="q7">
+  <h2>7. Mouse Path &amp; Coordinates Logger</h2>
+  <p class="hint">Move inside the box to see live coordinates. Double-click to drop a red dot.</p>
+  <p id="coords">clientX: –, clientY: –</p>
+  <div id="trackerBox"></div>
+</section>
+
+<!-- ============================ Q8 ============================ -->
+<section class="card" id="q8">
+  <h2>8. Custom Dropdown (no &lt;select&gt;)</h2>
+  <p class="hint">Click the button to open. Click an option to choose it. Click anywhere outside to close.</p>
+  <div class="dropdown" id="customDropdown">
+    <button type="button" class="dropdown-toggle" id="dropdownToggle">Select a language ▾</button>
+    <ul class="dropdown-menu" id="dropdownMenu">
+      <li>JavaScript</li>
+      <li>Python</li>
+      <li>Java</li>
+      <li>C++</li>
+      <li>Go</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================ Q9 ============================ -->
+<section class="card" id="q9">
+  <h2>9. Form Submit Blocker with Live Errors</h2>
+  <p class="hint">Invalid submit is blocked with preventDefault(). Errors vanish as you fix each field.</p>
+  <form id="signupForm" novalidate>
+    <div class="field">
+      <label for="formName">Name</label>
+      <input type="text" id="formName" placeholder="Your name">
+      <p class="error"></p>
+    </div>
+    <div class="field">
+      <label for="formEmail">Email</label>
+      <input type="text" id="formEmail" placeholder="you@example.com">
+      <p class="error"></p>
+    </div>
+    <div class="field">
+      <label for="formPassword">Password</label>
+      <input type="password" id="formPassword" placeholder="Min 6 characters">
+      <p class="error"></p>
+    </div>
+    <button type="submit">Submit</button>
+    <p class="success" id="formSuccess" hidden>Form Submitted Successfully</p>
+  </form>
+</section>
+
+<script>
+/* ==========================================================================
+   Q1 – Dynamic Product List Manager (event delegation)
+   ONE click listener on the parent <ul> handles every Edit/Delete/Save button,
+   even for items that are added later. Each button carries data-action.
+   ========================================================================== */
+(function productListManager() {
+  const input = document.getElementById("productInput");
+  const addButton = document.getElementById("addProductBtn");
+  const list = document.getElementById("productList");
+
+  let editingItem = null; // the <li> currently in edit mode (only one at a time)
+
+  // Build one <li> for a product name
+  function createItem(name) {
+    const li = document.createElement("li");
+
+    const nameSpan = document.createElement("span");
+    nameSpan.className = "product-name";
+    nameSpan.textContent = name;
+
+    const editBtn = document.createElement("button");
+    editBtn.textContent = "Edit";
+    editBtn.dataset.action = "edit";
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Delete";
+    deleteBtn.className = "danger";
+    deleteBtn.dataset.action = "delete";
+
+    li.append(nameSpan, editBtn, deleteBtn);
+    return li;
+  }
+
+  function addProduct() {
+    const name = input.value.trim();
+    if (!name) return;               // ignore empty input
+    list.appendChild(createItem(name));
+    input.value = "";
+    input.focus();
+  }
+
+  // Switch an item into inline edit mode: swap the <span> for an <input>
+  function startEdit(li) {
+    if (editingItem && editingItem !== li) saveEdit(editingItem); // save any other open edit first
+    const nameSpan = li.querySelector(".product-name");
+    const editInput = document.createElement("input");
+    editInput.type = "text";
+    editInput.className = "edit-input";
+    editInput.value = nameSpan.textContent;
+    li.replaceChild(editInput, nameSpan);
+    li.querySelector("[data-action='edit']").textContent = "Save";
+    li.querySelector("[data-action='edit']").dataset.action = "save";
+    editingItem = li;
+    editInput.focus();
+    editInput.select();
+  }
+
+  // Leave edit mode: put the (trimmed) text back into a <span>
+  function saveEdit(li, cancel = false) {
+    const editInput = li.querySelector(".edit-input");
+    if (!editInput) return;
+    const nameSpan = document.createElement("span");
+    nameSpan.className = "product-name";
+    const newValue = editInput.value.trim();
+    // Keep old text if cancelled or empty
+    nameSpan.textContent = cancel || !newValue ? editInput.dataset.original || nameSpan.textContent : newValue;
+    li.replaceChild(nameSpan, editInput);
+    const saveBtn = li.querySelector("[data-action='save']");
+    saveBtn.textContent = "Edit";
+    saveBtn.dataset.action = "edit";
+    if (editingItem === li) editingItem = null;
+  }
+
+  addButton.addEventListener("click", addProduct);
+  input.addEventListener("keydown", (e) => { if (e.key === "Enter") addProduct(); });
+
+  // ---- Event delegation: one listener on the parent <ul> ----
+  list.addEventListener("click", (event) => {
+    const button = event.target.closest("button");
+    if (!button || !list.contains(button)) return; // click wasn't on a button
+    const li = button.closest("li");
+    const action = button.dataset.action;
+
+    if (action === "edit") startEdit(li);
+    else if (action === "save") saveEdit(li);
+    else if (action === "delete") {
+      if (editingItem === li) editingItem = null;
+      li.remove();
+    }
+  });
+
+  // Enter = save, Esc = cancel (delegated on the list as well)
+  list.addEventListener("keydown", (event) => {
+    if (!event.target.classList.contains("edit-input")) return;
+    const li = event.target.closest("li");
+    if (event.key === "Enter") saveEdit(li);
+    if (event.key === "Escape") { event.target.value = ""; saveEdit(li, true); }
+  });
+
+  // Remember the original text so Esc / empty value can restore it
+  list.addEventListener("focusin", (event) => {
+    if (event.target.classList.contains("edit-input") && !event.target.dataset.original) {
+      event.target.dataset.original = event.target.value;
+    }
+  });
+
+  // Auto-save when the user clicks anywhere outside the item being edited
+  document.addEventListener("click", (event) => {
+    if (editingItem && !editingItem.contains(event.target)) saveEdit(editingItem);
+  });
+})();
+
+
+/* ==========================================================================
+   Q2 – Live Character Counter with Warning Behaviour
+   ========================================================================== */
+(function characterCounter() {
+  const MAX_CHARS = 100;
+  const WARNING_AT = 20;
+  const textarea = document.getElementById("counterText");
+  const counter = document.getElementById("charCounter");
+  const resetButton = document.getElementById("resetCounterBtn");
+
+  function updateCounter() {
+    const remaining = MAX_CHARS - textarea.value.length;
+    counter.textContent = `${remaining} character${remaining === 1 ? "" : "s"} left`;
+    counter.classList.toggle("warning", remaining <= WARNING_AT && remaining > 0); // yellow
+    counter.classList.toggle("danger", remaining <= 0);                            // red
+  }
+
+  // Block any key that would ADD a character once the limit is reached
+  textarea.addEventListener("keydown", (event) => {
+    const atLimit = textarea.value.length >= MAX_CHARS;
+    const hasSelection = textarea.selectionStart !== textarea.selectionEnd; // typing would replace text
+    const isCharacterKey = event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey;
+    const isEnter = event.key === "Enter";
+    if (atLimit && !hasSelection && (isCharacterKey || isEnter)) {
+      event.preventDefault(); // stops further typing; Backspace/Delete/arrows still work
+    }
+  });
+
+  // Pasted text could still overflow: trim anything past the limit
+  textarea.addEventListener("input", () => {
+    if (textarea.value.length > MAX_CHARS) textarea.value = textarea.value.slice(0, MAX_CHARS);
+    updateCounter();
+  });
+
+  resetButton.addEventListener("click", () => {
+    textarea.value = "";
+    updateCounter();
+    textarea.focus();
+  });
+
+  updateCounter();
+})();
+
+
+/* ==========================================================================
+   Q3 – Multi-Step Form with Next/Back & Validation
+   ========================================================================== */
+(function multiStepForm() {
+  const form = document.getElementById("stepForm");
+  const stepPanels = [...form.querySelectorAll(".step")];
+  const dots = [...document.querySelectorAll("#q3 .step-dot")];
+  const backButton = document.getElementById("backBtn");
+  const nextButton = document.getElementById("nextBtn");
+  const summary = document.getElementById("summary");
+
+  // One validator per step; returns an error message or "" when valid
+  const validators = [
+    (value) => (value.trim().length >= 2 ? "" : "Name must be at least 2 characters."),
+    (value) => (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? "" : "Enter a valid email address."),
+    (value) => (value.length >= 6 ? "" : "Password must be at least 6 characters."),
+  ];
+
+  let currentStep = 0;
+
+  function showStep(index) {
+    currentStep = index;
+    stepPanels.forEach((panel, i) => panel.classList.toggle("active", i === index));
+    dots.forEach((dot, i) => {
+      dot.classList.toggle("active", i === index);
+      dot.classList.toggle("done", i < index);
+    });
+    backButton.disabled = index === 0;
+    nextButton.textContent = index === stepPanels.length - 1 ? "Finish" : "Next";
+    stepPanels[index].querySelector("input").focus();
+  }
+
+  // Validate the current step's input and show/clear its error
+  function validateCurrent() {
+    const input = stepPanels[currentStep].querySelector("input");
+    const errorElement = stepPanels[currentStep].querySelector(".error");
+    const message = validators[currentStep](input.value);
+    errorElement.textContent = message;
+    return message === "";
+  }
+
+  function showSummary() {
+    form.hidden = true;
+    document.querySelector("#q3 .progress").hidden = true;
+    document.getElementById("sumName").textContent = document.getElementById("stepName").value.trim();
+    document.getElementById("sumEmail").textContent = document.getElementById("stepEmail").value.trim();
+    document.getElementById("sumPassword").textContent = "•".repeat(document.getElementById("stepPassword").value.length);
+    summary.hidden = false;
+  }
+
+  // "Next"/"Finish" is the submit button, so pressing Enter works too
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (!validateCurrent()) return;           // stay on this step if invalid
+    if (currentStep < stepPanels.length - 1) showStep(currentStep + 1);
+    else showSummary();                       // all 3 steps complete
+  });
+
+  backButton.addEventListener("click", () => {
+    if (currentStep > 0) showStep(currentStep - 1);
+  });
+
+  document.getElementById("restartBtn").addEventListener("click", () => {
+    form.reset();
+    stepPanels.forEach((panel) => (panel.querySelector(".error").textContent = ""));
+    summary.hidden = true;
+    form.hidden = false;
+    document.querySelector("#q3 .progress").hidden = false;
+    showStep(0);
+  });
+
+  // Don't steal focus on page load
+  stepPanels[0].classList.add("active");
+  dots[0].classList.add("active");
+  backButton.disabled = true;
+})();
+
+
+/* ==========================================================================
+   Q4 – Theme Switcher Using Attribute Manipulation
+   Everything is applied with setAttribute(): the class on <body> (which holds
+   the CSS variables) and the custom attribute data-theme="dark".
+   ========================================================================== */
+(function themeSwitcher() {
+  const body = document.body;
+  const status = document.querySelector("#themeStatus code");
+
+  document.getElementById("q4").addEventListener("click", (event) => {
+    const button = event.target.closest("[data-set-theme]");
+    if (!button) return;
+    const theme = button.getAttribute("data-set-theme"); // "light" | "dark" | "blue"
+
+    body.setAttribute("class", `theme-${theme}`);  // adds the theme class
+    body.setAttribute("data-theme", theme);        // saves current theme in a custom attribute
+    status.textContent = body.getAttribute("data-theme");
+  });
+})();
+
+
+/* ==========================================================================
+   Q5 – Image Gallery with Modal Preview
+   Images are generated as inline SVG data-URIs so the page works offline.
+   ========================================================================== */
+(function imageGallery() {
+  const gallery = document.getElementById("gallery");
+  const overlay = document.getElementById("modalOverlay");
+  const modalContent = document.getElementById("modalContent");
+  const modalImage = document.getElementById("modalImage");
+  const modalCaption = document.getElementById("modalCaption");
+
+  const images = [
+    { label: "Sunrise",  from: "#f59e0b", to: "#ef4444" },
+    { label: "Ocean",    from: "#0ea5e9", to: "#1e3a8a" },
+    { label: "Forest",   from: "#22c55e", to: "#14532d" },
+    { label: "Twilight", from: "#8b5cf6", to: "#1e1b4b" },
+    { label: "Desert",   from: "#fcd34d", to: "#b45309" },
+    { label: "Glacier",  from: "#a5f3fc", to: "#0369a1" },
+  ];
+
+  // Build an SVG picture and return it as a data URI
+  function makeImage({ label, from, to }, width, height) {
+    const svg =
+      `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 400 300">` +
+      `<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">` +
+      `<stop offset="0" stop-color="${from}"/><stop offset="1" stop-color="${to}"/></linearGradient></defs>` +
+      `<rect width="400" height="300" fill="url(#g)"/>` +
+      `<circle cx="300" cy="90" r="40" fill="rgba(255,255,255,.35)"/>` +
+      `<text x="200" y="170" font-family="sans-serif" font-size="44" fill="#fff" text-anchor="middle">${label}</text>` +
+      `</svg>`;
+    return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+  }
+
+  // Create the 6 thumbnails
+  images.forEach((image, index) => {
+    const thumb = document.createElement("img");
+    thumb.src = makeImage(image, 400, 300);
+    thumb.alt = image.label;
+    thumb.dataset.index = index;
+    gallery.appendChild(thumb);
+  });
+
+  function openModal(index) {
+    modalImage.src = makeImage(images[index], 800, 600); // bigger version
+    modalImage.alt = images[index].label;
+    modalCaption.textContent = images[index].label;
+    overlay.classList.add("open");
+  }
+
+  function closeModal() {
+    overlay.classList.remove("open");
+  }
+
+  // Delegation: one listener on the grid handles all 6 images
+  gallery.addEventListener("click", (event) => {
+    const thumb = event.target.closest("img");
+    if (thumb) openModal(Number(thumb.dataset.index));
+  });
+
+  // Clicking the dark overlay (outside the modal) closes it
+  overlay.addEventListener("click", closeModal);
+
+  // Clicking INSIDE the modal must not bubble up to the overlay
+  modalContent.addEventListener("click", (event) => event.stopPropagation());
+
+  document.addEventListener("keydown", (event) => { if (event.key === "Escape") closeModal(); });
+})();
+
+
+/* ==========================================================================
+   Q6 – Real-Time Table Filter Using the input event
+   ========================================================================== */
+(function tableFilter() {
+  const searchInput = document.getElementById("searchInput");
+  const rows = [...document.querySelectorAll("#studentBody tr:not(#noResults)")];
+  const noResultsRow = document.getElementById("noResults");
+
+  searchInput.addEventListener("input", () => {
+    const query = searchInput.value.trim().toLowerCase(); // case-insensitive
+    let visibleCount = 0;
+
+    rows.forEach((row) => {
+      const matches = row.textContent.toLowerCase().includes(query);
+      row.hidden = !matches;
+      if (matches) visibleCount++;
+    });
+
+    noResultsRow.hidden = visibleCount > 0; // show message only when nothing matches
+  });
+})();
+
+
+/* ==========================================================================
+   Q7 – Mouse Path & Coordinates Logger
+   ========================================================================== */
+(function mouseTracker() {
+  const box = document.getElementById("trackerBox");
+  const coordsText = document.getElementById("coords");
+
+  // Live clientX / clientY while the mouse moves inside the box
+  box.addEventListener("mousemove", (event) => {
+    coordsText.textContent = `clientX: ${event.clientX}, clientY: ${event.clientY}`;
+  });
+
+  box.addEventListener("mouseleave", () => {
+    coordsText.textContent = "clientX: –, clientY: –";
+  });
+
+  // Double-click drops a red dot exactly where the click happened
+  box.addEventListener("dblclick", (event) => {
+    const boxRect = box.getBoundingClientRect();       // client coords -> box-relative coords
+    const dot = document.createElement("div");
+    dot.className = "dot";
+    dot.style.left = `${event.clientX - boxRect.left - box.clientLeft}px`;
+    dot.style.top = `${event.clientY - boxRect.top - box.clientTop}px`;
+    box.appendChild(dot);
+  });
+})();
+
+
+/* ==========================================================================
+   Q8 – Custom Dropdown Using Only JavaScript (capturing phase to close)
+   ========================================================================== */
+(function customDropdown() {
+  const dropdown = document.getElementById("customDropdown");
+  const toggle = document.getElementById("dropdownToggle");
+  const menu = document.getElementById("dropdownMenu");
+
+  // Button shows/hides the options
+  toggle.addEventListener("click", () => dropdown.classList.toggle("open"));
+
+  // Clicking an option updates the button text and closes the menu
+  menu.addEventListener("click", (event) => {
+    const option = event.target.closest("li");
+    if (!option) return;
+    toggle.textContent = `${option.textContent} ▾`;
+    dropdown.classList.remove("open");
+  });
+
+  // Close on any outside click. The 3rd argument `true` registers the listener
+  // in the CAPTURING phase, so it runs first, even if some inner element
+  // calls stopPropagation() later during the bubbling phase.
+  document.addEventListener(
+    "click",
+    (event) => {
+      if (!dropdown.contains(event.target)) dropdown.classList.remove("open");
+    },
+    true
+  );
+})();
+
+
+/* ==========================================================================
+   Q9 – Form Submit Blocker with preventDefault() and Live Errors
+   ========================================================================== */
+(function validatedForm() {
+  const form = document.getElementById("signupForm");
+  const successMessage = document.getElementById("formSuccess");
+
+  // field id -> validation rule (returns error text or "")
+  const rules = {
+    formName: (value) => (value.trim() ? "" : "Name is required."),
+    formEmail: (value) => {
+      if (!value.trim()) return "Email is required.";
+      return value.includes("@") ? "" : "Email must contain @.";
+    },
+    formPassword: (value) => (value.length >= 6 ? "" : "Password must be at least 6 characters."),
+  };
+
+  // Validate one field and show/clear its inline error
+  function validateField(input) {
+    const message = rules[input.id](input.value);
+    const field = input.closest(".field");
+    field.querySelector(".error").textContent = message;
+    field.classList.toggle("invalid", message !== "");
+    return message === "";
+  }
+
+  const inputs = Object.keys(rules).map((id) => document.getElementById(id));
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();                         // stop the real form submission
+    successMessage.hidden = true;
+
+    // Validate EVERY field (don't stop at the first error) so all errors show
+    const results = inputs.map(validateField);
+    if (results.every(Boolean)) {
+      successMessage.hidden = false;                // "Form Submitted Successfully"
+      form.reset();
+    }
+  });
+
+  // Live correction: errors disappear automatically as the input becomes valid
+  form.addEventListener("input", (event) => {
+    const input = event.target;
+    if (!rules[input.id]) return;
+    successMessage.hidden = true;
+    if (input.closest(".field").classList.contains("invalid")) validateField(input);
+  });
+})();
+</script>
+</body>
+</html>
